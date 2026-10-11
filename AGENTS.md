@@ -1,4 +1,4 @@
-# Global Agent Harness Instructions
+# Global Coding Agent Harness Instructions
 
 Apply these defaults within the requested scope. A workspace's own `AGENTS.md` takes precedence.
 
@@ -16,7 +16,7 @@ When principles or instructions conflict, resolve them in this exact descending 
 1. **Inspect and baseline**: Read relevant instructions, inspect the owning module and native checks, and run `git status` before editing tracked files. Preserve existing user changes intact.
 2. **Map the problem**: For multi-part or complex work, map the architectural plan, constraints, dependencies, taxonomy, and observable completion criteria in a single initial pass before modifying code. Update that map only when evidence changes the plan.
 3. **Make minimal changes**: Implement the smallest complete change inside the module that already owns that behavior. Follow the project layout, naming conventions, and established patterns.
-4. **Verify changes**: Run affected checks and targeted tests. Inspect the final diff for accidental edits and verify that `git diff --check` passes cleanly.
+4. **Verify changes**: Run affected checks and targeted tests. Inspect this task's diff for accidental edits and follow the Diff Hygiene rule below.
 5. **Report outcomes**: Report observed results, verification evidence, and remaining limits. Explicitly distinguish between pass, fail, skip, and unavailable.
 
 ### Operating Principles
@@ -46,7 +46,7 @@ When principles or instructions conflict, resolve them in this exact descending 
 - **Restricted Operations**: Require explicit user confirmation before committing, pushing, opening PRs, publishing, mutating external infrastructure, or executing destructive Git commands (such as `git reset`, checkout overwrite, or `git stash drop`). Existing explicit authorization counts.
 - **Code Placement and Abstraction**: Write readable, debuggable code with explicit ownership and failure modes. Place logic inside the module that already owns that behavior. Enlarge an existing module before introducing a new abstraction layer. Split files only when explicitly requested; each abstraction must reduce complexity.
 - **Dependencies**: Add production dependencies only when explicitly requested; ask before adding any other production dependency.
-- **Diff Hygiene**: Retain user-facing and operational logs. Remove debug logs, temporary prints, profiling code, and commented-out experiments. In a Git worktree, the diff is ready when it contains zero accidental edits and `git diff --check` passes cleanly.
+- **Diff Hygiene**: Retain user-facing and operational logs. Remove debug logs, temporary prints, profiling code, and commented-out experiments. Scope diff review and `git diff --check -- <changed-paths>` to files changed by this task. The diff is ready when it contains zero accidental edits and this check passes cleanly.
 - **Comments**: Document intent, constraints, invariants, and non-obvious logic. Keep comments strictly synchronized with code changes.
 
 ## Verification and Testing
@@ -73,7 +73,6 @@ When principles or instructions conflict, resolve them in this exact descending 
 ## Handoffs, Compaction, and Meta-Skills
 
 - **Instruction Authoring**: When modifying skills or instructions, follow [writing-for-agents](skills/writing-for-agents/SKILL.md) for routing, disclosure, and validation.
-- **Repository Maintenance**: When maintaining this repository, run `bun skills/writing-for-agents/scripts/validate.ts` from root. Run affected script tests when changing executable helpers.
 - **State Compaction and Handoff**: Follow [handoff](skills/handoff/SKILL.md) for save paths, skill recommendations, artifact pointers, and redactions. Preserve state in this exact descending order:
   1. Architecture decisions, system invariants, and constraints with meaning intact.
   2. Modified file paths and their substantive changes.

@@ -15,15 +15,6 @@ Make the agent's process predictable through clear context, usable tools, and ob
 
 Done means each changed instruction has an owner, each required pointer resolves, and completion can be distinguished from failure. A shorter document or passing linter alone does not prove better agent behavior.
 
-For this skill collection, run the bundled [validator](scripts/validate.ts) with Bun. It checks metadata and explicit relative Markdown file links without network access:
-
-```sh
-bun /absolute/path/to/writing-for-agents/scripts/validate.ts /absolute/path/to/agents-repo
-bun test /absolute/path/to/writing-for-agents/scripts/validate.test.ts
-```
-
-Replace the paths with the resolved skill and repository directories. The validator checks structure; review prose, tool availability, and task outcomes separately.
-
 ## Context pointers
 
 A **context pointer** names out-of-context material and the condition for reading it. A skill description and an `AGENTS.md` link serve the same purpose.

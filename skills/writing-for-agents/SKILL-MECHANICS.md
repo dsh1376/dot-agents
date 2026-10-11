@@ -27,6 +27,5 @@ A router lists branches, their entry points, and the conditions for choosing the
 - Inspect runtime availability and existing dependency configuration before installing anything. Prefer the environment's supplied tools.
 - Document required inputs, outputs, success conditions, and actionable failure behavior beside the command.
 - A helper must distinguish empty results from failure. Test missing inputs and the failure that motivated the helper, alongside a successful case.
-- Keep structural checks executable. The collection's [validator](scripts/validate.ts) checks metadata and relative Markdown file links; its [tests](scripts/validate.test.ts) cover valid and broken fixtures.
 
 Before delivery, exercise changed commands and inspect their outputs. Verify every routing branch changed by the edit through a representative task or explicitly report it as untested.
