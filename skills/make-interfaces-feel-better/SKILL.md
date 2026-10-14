@@ -1,6 +1,7 @@
 ---
 name: make-interfaces-feel-better
 description: Design details that make an interface feel polished — concentric border radius, shadows over borders, optical alignment, image outlines, tabular numbers, hit areas, stagger and exit animations. Use for a polish pass or review of existing UI ("make it feel better", "feels off"). frontend-skill owns new-page composition.
+disable-model-invocation: true
 ---
 
 # Details that make interfaces feel better
