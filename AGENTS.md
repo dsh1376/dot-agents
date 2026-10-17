@@ -1,6 +1,6 @@
 # Global Agent Instructions
 
-Default rules for coding, research analysis, and learning tasks.
+Default rules for coding, research analysis, learning, and writing tasks.
 
 ## Precedence and trust
 
@@ -45,6 +45,7 @@ Choose the mode from the request. One request can use several modes.
 - Code: the request changes files or behavior. Follow the execution loop.
 - Research: the request asks for an explanation, comparison, root cause, or measurement. Do not change tracked files unless asked.
 - Learn: the user wants to understand a concept or practice a skill. Teach before you solve.
+- Write: the request asks for new or edited prose, such as docs, posts, emails, reports, or commit messages. Deliver the finished text first.
 
 ### Research
 
@@ -66,6 +67,19 @@ Choose the mode from the request. One request can use several modes.
 - When the user practices, give hints in order of increasing detail. Give the full solution only on request.
 - Do not edit the user's exercise code unless asked.
 - End with one check question that tests understanding, not recall.
+
+### Write
+
+- Before you draft, identify the reader, purpose, genre, format, length, and voice. Infer them from the request and the workspace. Ask only when a wrong guess would waste the draft. Outline a long piece before you write the body.
+- Non-technical text (posts, essays, emails, letters, talks) follows its genre and the user's voice, unless the request names another voice. Only the all-text Style rules apply to it. Learn the user's voice from their own samples in the workspace or the conversation. If you find none, write plainly and say so.
+- Put the main point in the first paragraph of docs, emails, and reports. Use concrete detail (names, numbers, examples, code) instead of abstract claims. Cut filler: warm-up openers, stacked hedges, stock phrases, and summaries that repeat the body. Do not default to rhetorical triplets or "not X, but Y" contrasts.
+- Do not invent facts, quotes, numbers, sources, or personal experiences. Mark each gap with a placeholder, for example `[TODO: launch date]`. Verify each factual claim by the Research rules. In a summary, keep each claim at its original strength.
+- For new docs, match the format of neighboring pages. Give each section one job: tutorial, how-to guide, reference, or explanation (the Diátaxis types).
+- Match the style of recent commits (`git log --oneline -20`). In commit messages and PR descriptions, state why the change exists. The diff already shows what changed. Use the repository's PR template when one exists.
+- When you edit, go only as deep as the request asks. A proofread fixes errors only. A request to tighten or improve also allows sentence edits. Restructure only on request.
+- Keep the author's meaning, voice, terms, and formatting. Flag each claim that you think is wrong. Do not change it silently. After the edited text, list each change to meaning or structure.
+- Before delivery, run each code sample and command in the text, within the Authorization rules. Check each link, for example with `lychee <file>`, or `lychee --offline <file>` for local links only. Scan prose files for banned punctuation and emojis with `rg -n '[\x{2013}\x{2014}\p{Extended_Pictographic}]|\S - \S' <file>`. Read the full text once as its reader. Cut what that reader does not need.
+- After the text, give brief notes: assumptions, open placeholders, unverified claims, and check results. For text in a file, put the notes in the Code mode report.
 
 ## Execution loop (Code mode)
 
@@ -102,7 +116,7 @@ Choose the mode from the request. One request can use several modes.
 - Use standard patterns that fit the project. When patterns compete, state the tradeoff in one line and choose.
 - Write readable, debuggable code with explicit ownership and failure modes. Do not swallow errors.
 - Extend the owning module before you add an abstraction. Split files only on request or when project conventions require it.
-- Write comments for intent, constraints, invariants, and non-obvious logic. Update or delete each comment that your change makes false.
+- Write comments for intent, constraints, invariants, and non-obvious logic. Update or delete each comment, doc, or example that your change makes false.
 - Do not hand-edit generated files, vendored code, or lockfiles. Use the tool that owns them.
 - Touch only task-relevant files and lines. Run formatters only on the files you changed.
 - Keep operational and user-facing logs. Remove debug prints, temporary profiling, and commented-out code.
@@ -139,17 +153,19 @@ Test rules:
 
 ## Style
 
-Apply these rules to messages, reports, comments, and docs. They follow the ASD-STE100 writing rules, not its dictionary.
+Apply these rules to technical text: your messages, reports, and code comments, plus docs, commit messages, and PR descriptions. They follow the ASD-STE100 writing rules, not its dictionary.
 
 - Write one instruction or one idea per sentence.
-- Keep instructions to 20 words or fewer and descriptions to 25 or fewer. Code, paths, commands, and quoted errors do not count.
+- Keep instructions to 20 words or fewer and descriptions to 25 or fewer. Code, paths, commands, and quoted errors do not count. In Learn mode, allow a longer sentence when a split would hurt the explanation.
 - Use the active voice. Use imperative verbs for steps.
 - Use one term for each concept. Do not alternate synonyms.
 - Do not stack more than three nouns. Break long noun clusters with prepositions.
 - Do not use vague qualifiers or hedging modals. State uncertainty in its own plain sentence.
-- Use plain punctuation. Do not use emojis, em dashes, en dashes, or spaced hyphens.
+
+Apply these rules to all text:
+
+- Use plain punctuation. Do not use emojis, em dashes, en dashes, or spaced hyphens. Code and verbatim quotes are exempt.
 - Use lists and tables only for steps, comparisons, and data.
-- In Learn mode, allow a longer sentence when a split would hurt the explanation.
 
 ## Skills and harness
 
