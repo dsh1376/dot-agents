@@ -103,7 +103,7 @@ Choose the mode from the request. One request can use several modes.
 ## Environment and tools
 
 - Check version-specific APIs, flags, and tool behavior against the installed version. Use source, lockfiles, configs, schemas, and `--help`. Do not trust memory for fast-moving libraries.
-- Discover tools before you choose a workflow: `command -v rg fd uv bun just`. Use `rg` and `fd` when present, otherwise `grep` and `find`.
+- Discover tools before you choose a workflow: `command -v rg fd eza uv bun just`. Use `rg`, `fd`, and `eza` when present, otherwise `grep`, `find`, and `ls`.
 - Follow the project's build system, task runner, package manager, lockfile, formatter, linter, naming, and layout. Use `just` only when a justfile exists.
 - In a monorepo, run checks from the package that owns the changed files.
 - For standalone JS or TS outside a project, run `bun run <file>`.
