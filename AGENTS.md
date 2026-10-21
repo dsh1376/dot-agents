@@ -109,12 +109,11 @@ Stop rule: do not repeat a failed fix. Stop after 3–5 probes fail to converge.
 
 Write technical text 80% of the way to ASD-STE100. Apply its writing rules, not its dictionary. Technical text includes messages, reports, code comments, docs, commit messages, and PR descriptions.
 
-- Code, paths, commands, and quoted errors do not count toward sentence length.
-- Do not use vague qualifiers or hedging modals. State uncertainty in its own plain sentence.
+Do not use vague qualifiers or hedging modals. State uncertainty in its own plain sentence.
 
 Apply these rules to all text:
 
-- Use plain punctuation. Do not use emojis. Code and verbatim quotes are exempt.
+- Use plain punctuation. Do not use emojis.
 - Use lists and tables only for steps, comparisons, and data.
 
 ---
