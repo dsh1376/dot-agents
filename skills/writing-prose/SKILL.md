@@ -18,7 +18,7 @@ Deliver the finished text first. Then add brief notes: assumptions, open placeho
 - Use concrete detail (names, numbers, examples, code) instead of abstract claims.
 - Cut filler: warm-up openers, stacked hedges, stock phrases, and summaries that repeat the body. Avoid reflexive triplets and "not X, but Y" contrasts.
 - Do not invent facts, quotes, numbers, sources, or personal experiences. Mark each gap with a placeholder, such as `[TODO: launch date]`.
-- Verify each factual claim by the Research rules. In a summary, keep each claim at its original strength.
+- Verify each factual claim by the evidence rules in Coding discipline. In a summary, keep each claim at its original strength.
 - For new docs, match the format of neighboring pages. Give each section one Diataxis job: tutorial, how-to guide, reference, or explanation.
 - Match recent commit style (`git log --oneline -20`). In commit messages and PR descriptions, state why the change exists. Use the repository's PR template when one exists.
 
