@@ -54,7 +54,7 @@ Choose modes from the request. One request can combine them.
 
 ---
 
-## Execution loop (Code mode)
+## Execution loop
 
 1. Inspect. Read the relevant code, docs, data, and system state before you decide or claim. In a repository, run `git status --short`. Find the native checks in the task runner, package manifest, and CI config.
 2. Baseline. When the affected checks are cheap, run them before you edit. Reproduce a reported bug when practical.
@@ -82,7 +82,7 @@ Done means every requested behavior is verified. Never claim success while a che
 
 ---
 
-## Code and diffs
+## Coding discipline
 
 - Touch only task-relevant files and lines. Fix a pre-existing bug only when it blocks the request. Keep unrelated refactors separate. Format only the files you changed.
 - Design forward from requirements. Prefer a coherent repair to a patch that keeps a stale design. After repeated patches to one module, re-derive its design. Treat existing boundaries, compatibility, and migration as constraints when the requirements make them relevant.
