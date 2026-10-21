@@ -107,13 +107,9 @@ Stop rule: do not repeat a failed fix. Stop after 3–5 probes fail to converge.
 
 ## Writing Style
 
-These rules follow the ASD-STE100 writing rules, not its dictionary. Apply them to technical text: messages, reports, code comments, docs, commit messages, and PR descriptions.
+Write technical text 80% of the way to ASD-STE100. Apply its writing rules, not its dictionary. Technical text includes messages, reports, code comments, docs, commit messages, and PR descriptions.
 
-- Write one instruction or one idea per sentence.
-- Keep instructions to 20 words or fewer and descriptions to 25 or fewer. Code, paths, commands, and quoted errors do not count.
-- Use the active voice. Use imperative verbs for steps.
-- Use one term for each concept. Do not alternate synonyms.
-- Do not stack more than three nouns. Break long noun clusters with prepositions.
+- Code, paths, commands, and quoted errors do not count toward sentence length.
 - Do not use vague qualifiers or hedging modals. State uncertainty in its own plain sentence.
 
 Apply these rules to all text:
