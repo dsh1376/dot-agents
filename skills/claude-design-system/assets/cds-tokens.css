@@ -4,15 +4,21 @@
  * (snapshot 2026-10-17, sha256 c4f1223b...). That Storybook says it extracted them from
  * Claude.app. This file has not been checked against Claude.app itself.
  *
+ * Button and text tokens (--cds-site-*, --cds-text-*, --cds-button-*, .cds-btn) come from
+ * computed styles on https://claude.com/product/claude-code (first-party, captured 2026-10-19).
+ * Where the two sources disagree on buttons or text, claude.com wins.
+ *
  * Dark mode follows the source: add class "dark" to <html>.
  * Names marked "(skill name)" are labels added here; the source uses only the literal value.
  */
 
 :root {
   /* Brand: clay */
-  --cds-clay: #d97757;            /* thinking dots, primary buttons, brand icon */
-  --cds-clay-emphasized: #cc5a36; /* primary hover and pressed */
+  --cds-clay: #d97757;            /* thinking dots, send button, brand icon */
+  --cds-clay-emphasized: #c6613f; /* claude.com --color-clay-hover: brand button fill, clay hover. Storybook: #cc5a36 */
+  --cds-clay-focus: #c46849;      /* claude.com --color-focus: focus outline */
   --cds-clay-light: #fbf3ef;      /* light selected-state fill */
+  --cds-clay-text: #b65030;       /* (skill name) not in the source: small clay text at WCAG AA, 5.03:1 on white */
 
   /* Surfaces, lowest to highest */
   --cds-surface-0: #f5f5f3; /* sidebar and borderless shell */
@@ -31,6 +37,56 @@
   --cds-gray-800: #20201e;
   --cds-gray-850: #151515;
   --cds-gray-900: #0b0b0a;
+
+  /* claude.com warm gray scale (--color-gray-*) */
+  --cds-site-gray-000: #ffffff;
+  --cds-site-gray-050: #faf9f5;
+  --cds-site-gray-100: #f5f4ed;
+  --cds-site-gray-150: #f0eee6;
+  --cds-site-gray-200: #e8e6dc;
+  --cds-site-gray-250: #dedcd1;
+  --cds-site-gray-300: #d1cfc5;
+  --cds-site-gray-350: #c2c0b6;
+  --cds-site-gray-400: #b0aea5;
+  --cds-site-gray-450: #9c9a92;
+  --cds-site-gray-500: #87867f;
+  --cds-site-gray-550: #73726c;
+  --cds-site-gray-600: #5e5d59;
+  --cds-site-gray-650: #4d4c48;
+  --cds-site-gray-700: #3d3d3a;
+  --cds-site-gray-750: #30302e;
+  --cds-site-gray-800: #262624;
+  --cds-site-gray-850: #1f1e1d;
+  --cds-site-gray-900: #1a1918;
+  --cds-site-gray-950: #141413;
+
+  /* claude.com text roles (--theme-foreground-*) */
+  --cds-text-primary: var(--cds-site-gray-950);
+  --cds-text-secondary: var(--cds-site-gray-750);
+  --cds-text-tertiary: var(--cds-site-gray-600);
+  --cds-page: var(--cds-site-gray-050);             /* --theme-background-primary */
+  --cds-bg-secondary: var(--cds-site-gray-100);     /* tiles */
+  --cds-bg-tertiary: var(--cds-site-gray-150);      /* tab track, inputs */
+  --cds-bg-overlay: var(--cds-site-gray-000);       /* dropdown menus */
+  --cds-border-primary: var(--cds-site-gray-400);   /* link underline */
+  --cds-border-secondary: var(--cds-site-gray-300); /* button rings, dividers */
+  --cds-border-tertiary: var(--cds-site-gray-200);  /* hairlines, tile rings */
+  --cds-shadow-overlay: 0 4px 16px rgba(0,0,0,0.1); /* claude.com dropdown */
+
+  /* claude.com status and control colors */
+  --cds-error: #bf4d43;     /* 4.57:1 on the light page; no dark variant in the source */
+  --cds-switch-on: #2c84db;
+
+  /* claude.com button roles (--theme-button-*) */
+  --cds-button-primary-bg: var(--cds-site-gray-950);
+  --cds-button-primary-fg: var(--cds-site-gray-050);
+  --cds-button-secondary-bg: var(--cds-site-gray-200);
+  --cds-button-secondary-fg: var(--cds-site-gray-650);
+  --cds-button-secondary-fg-hover: var(--cds-site-gray-950);
+  --cds-button-tertiary-fg: var(--cds-site-gray-600);
+  --cds-button-tertiary-fg-hover: var(--cds-site-gray-950);
+  --cds-button-brand-bg: var(--cds-clay-emphasized);
+  --cds-button-brand-fg: #ffffff;
 
   /* User message bubble fill (skill name) */
   --cds-user-bubble: #f0f4f8;
@@ -104,7 +160,31 @@
   --cds-shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
   --cds-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
   --cds-shadow-popover: 0 8px 24px rgba(0,0,0,0.5);
-  /* The source gives no dark composer shadow; it reuses the light value on #20201e. */
+  /* Not in the source: it reuses the light composer shadow, nearly invisible on #20201e.
+     Skill recommendation: white rings at the same alphas, drop shadow at dark-ladder alphas. */
+  --cds-shadow-composer: 0 0.25rem 1.25rem rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.08);
+  --cds-shadow-composer-focus: 0 0.25rem 1.25rem rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.16), 0 0 0 1px rgba(255,255,255,0.16);
+
+  --cds-clay-text: #d97757; /* clay already passes AA on dark surfaces: 5.23:1 on #20201e */
+
+  /* claude.com dark theme */
+  --cds-text-primary: var(--cds-site-gray-050);
+  --cds-text-secondary: var(--cds-site-gray-400);
+  --cds-text-tertiary: var(--cds-site-gray-500);
+  --cds-page: var(--cds-site-gray-950);
+  --cds-bg-secondary: var(--cds-site-gray-900);
+  --cds-bg-tertiary: var(--cds-site-gray-800);
+  --cds-bg-overlay: var(--cds-site-gray-900);
+  --cds-border-primary: var(--cds-site-gray-600);
+  --cds-border-secondary: var(--cds-site-gray-700);
+  --cds-border-tertiary: var(--cds-site-gray-750);
+  --cds-button-primary-bg: var(--cds-site-gray-050);
+  --cds-button-primary-fg: var(--cds-site-gray-950);
+  --cds-button-secondary-bg: var(--cds-site-gray-750);
+  --cds-button-secondary-fg: var(--cds-site-gray-050);
+  --cds-button-secondary-fg-hover: var(--cds-site-gray-050);
+  --cds-button-tertiary-fg: var(--cds-site-gray-050);
+  --cds-button-tertiary-fg-hover: var(--cds-site-gray-050);
 }
 
 /* Keyframes, as defined in the source */
@@ -181,6 +261,45 @@
 .text-balance-native { text-wrap: balance; } /* headings */
 .text-pretty-native { text-wrap: pretty; }   /* body paragraphs */
 .overflow-wrap-anywhere { overflow-wrap: anywhere; word-break: normal; } /* long ids, hashes, model names */
+
+/* Text selection, as on claude.com */
+::selection { background: var(--cds-clay); color: #ffffff; }
+
+/* Buttons, as rendered on claude.com. Hover grows a ring instead of changing the fill. */
+.cds-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 44px; height: 40px; padding: 8px 16px; gap: 8px;
+  border: none; border-radius: 8px;
+  font-family: inherit; font-size: 17px; font-weight: 400; line-height: 1; text-decoration: none;
+  font-feature-settings: "pnum", "lnum", "liga";
+  cursor: pointer;
+  transition: color 0.1s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.cds-btn:focus-visible { outline: 2px solid var(--cds-clay-focus); outline-offset: 4px; }
+.cds-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.cds-btn > svg { flex-shrink: 0; width: 20px; height: 20px; }
+
+.cds-btn--md { height: 36px; padding: 8px 12px; font-size: 15px; }
+.cds-btn--md > svg { width: 18px; height: 18px; }
+.cds-btn--sm { height: 28px; padding: 4px 12px; gap: 4px; font-size: 12px; letter-spacing: 0.01em; }
+.cds-btn--sm > svg { width: 16px; height: 16px; }
+/* With an icon, the side opposite the icon gets the wider padding. */
+.cds-btn--lead { padding-right: 24px; }
+.cds-btn--trail { padding-left: 24px; }
+.cds-btn--md.cds-btn--lead { padding-right: 16px; }
+.cds-btn--md.cds-btn--trail { padding-left: 16px; }
+.cds-btn--icon { min-width: unset; aspect-ratio: 1 / 1; padding: 8px; }
+.cds-btn--icon.cds-btn--sm { padding: 4px; }
+.cds-btn--icon > svg { width: 14px; height: 14px; }
+
+.cds-btn--primary { background: var(--cds-button-primary-bg); color: var(--cds-button-primary-fg); box-shadow: 0 0 0 0 var(--cds-button-primary-bg); }
+.cds-btn--primary:hover:not(:disabled) { box-shadow: 0 0 0 2px var(--cds-button-primary-bg); }
+.cds-btn--secondary { background: var(--cds-button-secondary-bg); color: var(--cds-button-secondary-fg); box-shadow: 0 0 0 0 var(--cds-button-secondary-bg), 0 0 0 1px var(--cds-border-secondary); }
+.cds-btn--secondary:hover:not(:disabled) { color: var(--cds-button-secondary-fg-hover); box-shadow: 0 0 0 1px var(--cds-button-secondary-bg), 0 0 0 2px var(--cds-border-secondary); }
+.cds-btn--tertiary { background: var(--cds-page); color: var(--cds-button-tertiary-fg); box-shadow: 0 0 0 0 var(--cds-page), 0 0 0 1px var(--cds-border-secondary); }
+.cds-btn--tertiary:hover:not(:disabled) { color: var(--cds-button-tertiary-fg-hover); box-shadow: 0 0 0 1px var(--cds-page), 0 0 0 2px var(--cds-border-secondary); }
+.cds-btn--brand { background: var(--cds-button-brand-bg); color: var(--cds-button-brand-fg); box-shadow: 0 0 0 0 var(--cds-button-brand-bg); }
+.cds-btn--brand:hover:not(:disabled) { box-shadow: 0 0 0 2px var(--cds-button-brand-bg); }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

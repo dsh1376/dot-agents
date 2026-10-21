@@ -2,9 +2,19 @@
 
 Read this when you build a chat surface or a control. Each recipe gives anatomy, Tailwind classes from the source, states, motion, and known defects. [foundations.md](foundations.md) owns token values. [motion.md](motion.md) owns keyframes and springs.
 
-Classes assume the Tailwind config in foundations.md (`clay`, `clay-hover`, `dark:` by class). Line numbers (`L123`) point into the source snapshot.
+Classes are the source's Tailwind v3 classes and assume the config in foundations.md (`clay`, `clay-hover`, `dark:` by class). Line numbers (`L123`) point into the source snapshot.
 
-Accessibility gap: the source has no `aria-*`, `role`, or `tabIndex` attribute anywhere, and several clickable elements are `div` or `span`. Each recipe lists the fix. Treat those fixes as required.
+## Before you copy a recipe
+
+The recipes keep source literals, defects included. Apply these substitutions to every recipe:
+
+- `shadow-xs` renders nothing in the source. Omit it or use `--cds-shadow-sm`, and say which ([foundations.md, Shadows](foundations.md#shadows)).
+- Stock radius classes render 4px to 16px, not the ladder. Add the radius mapping or keep stock radii, and say which ([foundations.md, Radius](foundations.md#radius)).
+- Write `placeholder-neutral-400` as `placeholder:text-neutral-400`.
+- On Tailwind v4, rename classes first ([foundations.md, Tailwind v4](foundations.md#tailwind-v4)).
+- Small clay text and white labels on clay fail AA. Use the fixes in [foundations.md, Color](foundations.md#color) when AA matters.
+- The source has no `aria-*`, `role`, `tabIndex`, or `focus-visible` style, and several clickable elements are `div` or `span`. Use native controls, and apply the accessibility fix listed with each recipe. Those fixes are required.
+- Give every interactive element the claude.com focus style: `outline: 2px solid #c46849; outline-offset: 4px` on `:focus-visible` (Tailwind: `focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c46849]`). The offset leaves a gap of page color, so it works in both modes.
 
 ## Chat composer
 
@@ -28,8 +38,8 @@ wrapper            w-full max-w-[42rem]
 
 | Part | Classes and values |
 | --- | --- |
-| Shell shadow, rest | `0 0.25rem 1.25rem rgba(0,0,0,0.035), inset 0 0 0 1px rgba(0,0,0,0.08)` |
-| Shell shadow, focus | `0 0.25rem 1.25rem rgba(0,0,0,0.075), inset 0 0 0 1px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.16)` |
+| Shell shadow, rest | `var(--cds-shadow-composer)`; values in [foundations.md, Composer dual ring](foundations.md#composer-dual-ring) |
+| Shell shadow, focus | `var(--cds-shadow-composer-focus)` on the shell's `:focus-within` |
 | Textarea | `w-full max-h-[24rem] min-h-[3.25rem] bg-transparent border-none outline-none resize-none text-[15px] leading-[1.4] text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 pl-2 focus:ring-0` |
 | Toolbar buttons | `h-8 px-2.5 rounded-lg flex items-center gap-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors` |
 | Send button | `size-8 rounded-lg flex items-center justify-center transition-all duration-150 bg-[#d97757] hover:bg-[#cc5a36] text-white shadow-sm disabled:opacity-20 disabled:cursor-not-allowed` |
@@ -38,13 +48,13 @@ States:
 
 - Focus: the source switches the shadow on textarea focus and blur only, so tabbing to a toolbar button drops the focus shadow. Put the focus shadow on the shell's `:focus-within` instead. The "dual ring" exists only in focus; at rest there is one inset ring.
 - Send disabled: while the trimmed text is empty (`disabled={!text.trim()}`), at 20% opacity.
-- Dark: shell `#20201e` (surface 3). The shadow stays the light value; see the gap in foundations.md.
+- Dark: shell `#20201e` (surface 3). The source keeps the light shadow, which is nearly invisible. The tokens file switches to the dark rings under `.dark`.
 
 Behavior gaps:
 
 - The source calls the composer an "adaptive input with a dual-ring focus breathing animation". The code has no resize logic and no breathing keyframe. The textarea only sets `rows=1` with min and max heights, and focus is a 200ms shadow transition. Grow the textarea to content between 52px and 384px: set `height` from `scrollHeight` on input, or use `field-sizing: content` where the browser supports it.
 - The send button has no accessible name. Add `aria-label="Send message"`.
-- The disabled send button still darkens on hover. Use `enabled:hover:bg-[#cc5a36]`.
+- The disabled send button still darkens on hover. Use `enabled:hover:bg-[#c6613f]` (the claude.com clay hover; the source uses `#cc5a36`).
 - The shell has `cursor-text`, but a click on its padding does not focus the textarea. Focus the textarea on shell click.
 - The source has no Enter-to-send handling and no `onClick` on any composer button.
 - The model picker label in the source is a sample ("Claude 3.7 Sonnet").
@@ -75,7 +85,7 @@ Motion:
 
 The assistant turn has no bubble, border, or fill. Only the user turn is a bubble. The sample answer in the source restates the streaming spec: each character fades in from a 6px blur over 90ms with a 30ms stagger. The story itself animates the whole answer block with `message-fade-up` and does not use the grapheme reveal. Use the block fade for a complete message and the grapheme reveal for streamed text.
 
-Give the thread `role="log"` (or `aria-live="polite"`) so screen readers announce new turns. The source has none.
+Give the thread `role="log"` so screen readers announce new turns. Set `aria-busy="true"` on a message while it streams, then `false`, so the reader announces the finished text once instead of each chunk. The source has neither.
 
 ## Thinking accordion
 
@@ -91,10 +101,13 @@ card              border border-neutral-200/80 dark:border-neutral-800 rounded-x
     chevron       chevronDown xs text-neutral-400 transition-transform duration-200, rotate-180 when open
   body wrapper    grid transition-[grid-template-rows] duration-200 ease-[cubic-bezier(.19,1,.22,1)]
                   gridTemplateRows: open or thinking ? "1fr" : "0fr"
-    body          min-h-0 overflow-hidden px-3.5 pb-3 pt-2 space-y-1 text-xs leading-relaxed font-mono
+    clip          min-h-0 overflow-hidden
+      body        px-3.5 pb-3 pt-2 space-y-1 text-xs leading-relaxed font-mono
                   text-neutral-600 dark:text-neutral-400 border-t border-neutral-100 dark:border-neutral-800/60
-      lines       each starts with "> "
+        lines     each starts with "> "
 ```
+
+The `clip` level is the fix for the collapsed strip below. The source puts the `body` classes and `min-h-0 overflow-hidden` on one element.
 
 Thinking dots: three `size-[3px] rounded-full bg-[#d97757]` spans, each `animation: 1.9s cubic-bezier(.4, 0, .2, 1) infinite timeline-quiet-dot`, with delays `0s`, `0.15s`, `0.3s`.
 
@@ -106,34 +119,59 @@ States:
 
 Fixes the source needs:
 
-- The header is a clickable `div`. Make it a `button` with `aria-expanded` and `aria-controls`.
+- The header is a clickable `div`. Make it a `button` with `aria-expanded` and `aria-controls`. Put `inert` on the collapsed body so its text leaves the tab order and the accessibility tree.
 - Show the elapsed time with `tabular-nums` (Constraint 05). The source hard-codes "Thought for 3 seconds".
-- The source puts `pt-2 pb-3` and `border-t` on the same `min-h-0` element that must shrink. Its border box cannot go below 21px, so the collapsed card keeps a 21px strip. Runtime check on 2026-10-17: the collapsed grid row measured 21px. Put `min-h-0 overflow-hidden` on a wrapper and the padding and border on an inner child.
+- The source puts `pt-2 pb-3` and `border-t` on the same `min-h-0` element that must shrink. Its border box cannot go below 21px, so the collapsed card keeps a 21px strip. Runtime check on 2026-10-17: the collapsed grid row measured 21px. The anatomy above splits it into `clip` and `body`.
 - The header keeps `cursor-pointer` while thinking, when a click does nothing. Use `cursor-default` in that state.
-- Dots 2 and 3 show solid during their delay because the animation has no fill mode. Use negative delays (`0s`, `-1.75s`, `-1.6s`) for the same phase offsets without the flash.
+- Dots 2 and 3 flash solid on mount. Use the negative delays in [motion.md, Thinking quiet dots](motion.md#thinking-quiet-dots).
 - The shadow ladder assigns MD to the thinking block, but the source card has no shadow.
 
 ## Buttons
 
-Sizes (L1173-1179), all clay primary:
+Buttons follow claude.com (computed styles, 2026-10-19). The `.cds-btn` classes in [assets/cds-tokens.css](../assets/cds-tokens.css) implement this section; use them, or copy the values into your own component.
 
-| Size | Height | Classes |
-| --- | --- | --- |
-| XS | 24px | `h-6 px-2 rounded-md text-xs font-medium` |
-| SM | 28px | `h-7 px-2.5 rounded-lg text-xs font-medium` |
-| MD (default) | 32px | `h-8 px-3.5 rounded-lg text-sm font-medium` |
-| LG | 40px | `h-10 px-5 rounded-xl text-sm font-medium` |
+Shared base:
 
-Variants (L1182-1198), all at MD height:
-
-| Variant | Classes |
+| Property | Value |
 | --- | --- |
-| Primary | `h-8 px-4 rounded-lg bg-clay text-white text-sm font-medium hover:bg-clay-hover shadow-xs transition-all active:scale-95 flex items-center gap-1.5` (optional spark icon xs) |
-| Secondary | `h-8 px-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all active:scale-95` |
-| Ghost | `h-8 px-3 rounded-lg text-neutral-600 dark:text-neutral-400 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all` |
-| Icon ghost | `size-8 rounded-lg flex items-center justify-center text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all` (icon sm) |
+| Layout | `inline-flex`, centered, `min-width: 44px`, no border |
+| Radius | 8px at every size |
+| Type | sans, weight 400, `line-height: 1`, `font-feature-settings: "pnum", "lnum", "liga"` |
+| Transition | `color 0.1s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out` |
+| Hover | the fill stays; a ring grows by 1px (see variants) |
+| Pressed | no pressed state |
+| Focus | `:focus-visible { outline: 2px solid #c46849; outline-offset: 4px }` |
+| Disabled | `opacity: 0.5; cursor: not-allowed` |
 
-More button patterns from other stories:
+Sizes:
+
+| Size | Class | Height | Padding | Gap | Icon | Label |
+| --- | --- | --- | --- | --- | --- | --- |
+| Large (default) | `.cds-btn` | 40px | 8px 16px; 24px on the side away from an icon | 8px | 20px | 17px (`body-2`) |
+| Medium | `.cds-btn--md` | 36px | 8px 12px; 16px on the side away from an icon | 8px | 18px | 15px (`body-3`) |
+| Small | `.cds-btn--sm` | 28px | 4px 12px | 4px | 16px | 12px (`caption`), tracking 0.01em |
+| Icon only | `.cds-btn--icon` | size's height, square | 8px (small: 4px) | none | 14px | none |
+
+Add `.cds-btn--lead` for a leading icon and `.cds-btn--trail` for a trailing icon; they set the wider padding.
+
+Variants. The tokens switch under `.dark`:
+
+| Variant | Class | Light | Dark | Hover |
+| --- | --- | --- | --- | --- |
+| Primary | `.cds-btn--primary` | fill 950 `#141413`, label 050 `#faf9f5` | fill 050, label 950 | `box-shadow: 0 0 0 2px <fill>`: the button grows 2px |
+| Secondary | `.cds-btn--secondary` | fill 200 `#e8e6dc`, label 650 `#4d4c48`, 1px ring 300 `#d1cfc5` | fill 750 `#30302e`, label 050, ring 700 `#3d3d3a` | label to 950 (dark: 050); ring to 2px behind a 1px fill-colored gap |
+| Tertiary | `.cds-btn--tertiary` | fill = page 050, label 600 `#5e5d59`, 1px ring 300 | fill = page 950, label 050, ring 700 | as secondary |
+| Brand | `.cds-btn--brand` | fill clay `#c6613f`, label white | same | 2px clay ring |
+
+Rings use `box-shadow`, not `border`, so hover never shifts layout. Numbers are the site gray steps in [foundations.md, Site grays](foundations.md#site-grays-claudecom).
+
+Use one primary per view. The hero pairs a primary ("Download for macOS", leading icon) with a secondary ("Read documentation", trailing icon). claude.com uses near-black primaries; clay appears on brand buttons and, in the app, on the composer send button.
+
+Contrast (computed): primary 17.50:1, secondary label 6.87:1, tertiary label 6.26:1, brand 4.05:1. White on brand clay fails AA for small text; when AA matters, use a `#b65030` fill (5.03:1).
+
+Storybook buttons, for reference only. The Storybook uses clay primaries (`bg-clay text-white hover:bg-clay-hover`), heights 24px, 28px, 32px, and 40px, radius classes `rounded-md` to `rounded-xl`, `text-xs` or `text-sm` medium labels, and `active:scale-95`. Prefer the claude.com system above. Keep a Storybook button only inside dense app toolbars, where 32px controls match the composer.
+
+Storybook button patterns (app toolbars and demos). They use clay fills and `active:scale-95`; restyle them with the claude.com variants unless the design calls for the Storybook look:
 
 | Pattern | Classes |
 | --- | --- |
@@ -147,16 +185,9 @@ More button patterns from other stories:
 | Hero press button | `px-6 py-3.5 rounded-xl bg-clay text-white text-sm font-medium hover:bg-clay-hover shadow-lg flex items-center gap-2` |
 | Disabled | `disabled:opacity-50` (lab buttons) or `disabled:opacity-20 disabled:cursor-not-allowed` (send) |
 
-Inconsistencies in the source, to settle per project:
+Press feedback: claude.com has none. For spring-driven presses in app UI, scale to 0.88 on press and spring back to 1 with the Button preset (motion.md).
 
-- The MD size uses `px-3.5`; the Primary and Secondary variants at the same height use `px-4`; Ghost uses `px-3`.
-- Only Primary and Secondary have `active:scale-95`. Ghost, icon-only, and the size ladder have no pressed state. Only Primary has `shadow-xs`.
-- The icon-only ghost button has no dark text variant (`text-neutral-500` in both modes).
-- Buttons use Tailwind's default 150ms transition, while the motion tokens give 60ms for button micro-scale.
-
-Press feedback: `active:scale-95` on CSS buttons. For spring-driven presses, scale to 0.88 on press and spring back to 1 with the Button preset (motion.md).
-
-Missing in the source: no `focus-visible` style on any button. Add a visible ring, for example `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay/50 focus-visible:ring-offset-2`. That ring is a skill recommendation.
+Missing in the source: no `focus-visible` style on any button. Add the claude.com focus outline from [Before you copy a recipe](#before-you-copy-a-recipe).
 
 ## Pill toggle and inline segmented switches
 
@@ -251,7 +282,7 @@ block             max-w-2xl mx-auto rounded-xl overflow-hidden border border-neu
 
 Timing defect: the source resets the copied state at 2500ms, the same moment the 0.3s fade starts. The fade never shows. Reset after 2800ms (2.5s delay plus 0.3s fade), or reset on `animationend`.
 
-Add `aria-live="polite"` to the copied label so screen readers hear the confirmation.
+Screen readers do not hear the label swap. Keep one visually hidden `role="status"` element mounted beside the button, and write "Copied" into it on success. A live region added at the same moment as its text is often not announced.
 
 Other source defects:
 

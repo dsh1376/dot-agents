@@ -4,25 +4,32 @@ Read this for color, surfaces, radius, heights, shadows, typography, and icons. 
 
 Values are exact literals from the source. "Source" means the CDS Storybook snapshot described in SKILL.md. Line numbers (`L123`) point into that snapshot.
 
+"claude.com" means computed styles read on 2026-10-19 from https://claude.com/product/claude-code, Anthropic's own site. It is first-party, so it overrides the Storybook for buttons, text color, and type. Its CSS custom property names are given in parentheses.
+
 ## Color
 
 ### Clay brand palette
 
-The source calls clay "a humanist palette that replaces saturated tech blue" (L342).
+The source calls clay "a humanist palette that replaces saturated tech blue" (L342). claude.com keeps one blue: the switch on-state, `#2c84db` (see Status and control colors).
+
+claude.com uses clay sparingly. On the page it appears only in the logo spark (`#d97757`), text selection (`#d97757`), the brand button (`#c6613f`), and the focus outline (`#c46849`). No body text, border, or fill elsewhere is clay. Match that restraint; as a skill recommendation, allow one clay element per view besides selection and focus.
 
 | Token | Hex | Role (source label) | Use |
 | --- | --- | --- | --- |
-| Clay | `#d97757` | Main brand clay | Thinking dots, emphasis buttons, brand icon |
-| Clay Emphasized | `#cc5a36` | Dark clay | Button hover, stronger pressed state |
+| Clay | `#d97757` | Main brand clay | Thinking dots, send button, brand icon |
+| Clay Emphasized | `#c6613f` | Dark clay | Brand button fill, clay hover |
+| Clay Focus | `#c46849` | none | Focus outline on every control |
 | Clay Light | `#fbf3ef` | Light clay fill | Light selected-state background |
 
-Tailwind names from the source config (L23-27): `clay` = `#d97757`, `clay-hover` = `#cc5a36`, `clay-light` = `#fbf3ef`.
+Clay Emphasized and Clay Focus come from claude.com (`--color-clay-hover`, `--color-clay-dark`). The Storybook gives `#cc5a36` for Clay Emphasized; use the claude.com value.
+
+Tailwind names from the source config (L23-27): `clay` = `#d97757`, `clay-hover` = `#cc5a36` (set it to `#c6613f`), `clay-light` = `#fbf3ef`.
 
 Clay at reduced opacity carries most tinted states:
 
 | Use | Class |
 | --- | --- |
-| Text selection | `selection:bg-[#d97757]/30 selection:text-white` |
+| Text selection | Storybook: `selection:bg-[#d97757]/30 selection:text-white`. claude.com: solid `#d97757`, white text (`::selection { background: #d97757; color: #fff }`); use this |
 | Badge and pill fill | `bg-clay/10 text-clay` |
 | Selected card fill | `bg-clay/5`, dark `dark:bg-clay/10` |
 | Overshoot zone fill | `bg-[#d97757]/5` with `border-clay/20` |
@@ -39,15 +46,49 @@ Contrast notes (computed with the WCAG formula, not stated in the source):
 | Pair | Ratio | Source use |
 | --- | --- | --- |
 | White on `#d97757` | 3.12:1 | Primary button labels at 12px and 14px |
-| White on `#cc5a36` | 4.13:1 | Primary hover |
+| White on `#c6613f` | 4.05:1 | claude.com brand button, primary hover |
 | `#d97757` text on white | 3.12:1 | 12px hex labels, eyebrows, inline code |
 | `#d97757` text on `neutral-100` | 2.86:1 | Code value pills |
-| `#d97757` text on `clay/10` over white | 2.74:1 | "Verified" badge |
-| White text on `clay/30` over white | 1.37:1 | Text selection |
+| `#d97757` text on `clay/10` over white | 2.82:1 | "Verified" badge |
+| White text on `clay/30` over white | 1.37:1 | Storybook text selection |
+| White text on solid `#d97757` | 3.12:1 | claude.com text selection |
 
-All of these fail WCAG AA (4.5:1) for small text. Clay text and clay buttons pass the 3:1 large-text threshold only. When AA matters, use `#cc5a36` or darker for clay text, use 14px semibold or larger on clay fills, and keep selected text dark (for example `selection:text-neutral-900`). These fixes are skill recommendations.
+All of these fail WCAG AA (4.5:1) for small text. Clay text and clay buttons pass the 3:1 large-text threshold only. WCAG large text is 24px regular or 18.66px bold, so 12px to 14px button labels count as small text.
 
-### Surface ladder
+When AA matters, apply these fixes (skill recommendations, computed):
+
+| Problem | Fix | Ratio |
+| --- | --- | --- |
+| Small clay text in light mode | `#b65030` (`--cds-clay-text`) | 5.03:1 on white, 4.55:1 on `clay/10`, 4.62:1 on `neutral-100` |
+| White label on a clay fill | `#b65030` fill; keep the hover fill darker than it | 5.03:1 |
+| Selected text | the claude.com selection: solid clay, white text (set in the tokens file) | 3.12:1, up from 1.37:1 |
+
+`#c6613f` is not an AA fix: it gives 4.05:1 (the Storybook's `#cc5a36` gives 4.13:1). Clay text in dark mode already passes: 5.23:1 on `#20201e` to 5.85:1 on `#151515`.
+
+### Page surfaces and borders (claude.com)
+
+claude.com builds every surface and border from its warm grays (`--theme-background-*`, `--theme-border-*`). Use these for pages, cards, tiles, menus, and dividers. [assets/cds-tokens.css](../assets/cds-tokens.css) declares them and switches them under `.dark`.
+
+| Role | Token | Light | Dark | Use on the page |
+| --- | --- | --- | --- | --- |
+| Page | `--cds-page` | 050 `#faf9f5` | 950 `#141413` | Body background, tertiary button fill |
+| Secondary | `--cds-bg-secondary` | 100 `#f5f4ed` | 900 `#1a1918` | Tiles ("other ways to use" grid), dark newsletter card |
+| Tertiary | `--cds-bg-tertiary` | 150 `#f0eee6` | 800 `#262624` | Tab bar track, dark text input |
+| Overlay | `--cds-bg-overlay` | 000 `#ffffff` | 900 `#1a1918` | Dropdown menus |
+| Border, strong | `--cds-border-primary` | 400 `#b0aea5` | 600 `#5e5d59` | Link underline color |
+| Border, default | `--cds-border-secondary` | 300 `#d1cfc5` | 700 `#3d3d3a` | Button rings, FAQ dividers, dark input border |
+| Border, faint | `--cds-border-tertiary` | 200 `#e8e6dc` | 750 `#30302e` | Breadcrumb bar and section hairlines |
+
+Each step is a small lightness change: a tile is 1.05:1 against the page and a faint border 1.19:1. Depth comes from these steps, not from shadows. The light page is cream `#faf9f5`, not white, and white is reserved for overlays.
+
+Edges on claude.com:
+
+- Tiles: fill secondary plus a 1px ring, `box-shadow: 0 0 0 0 <fill>, 0 0 0 1px #e8e6dc`. A ring, like the button ring, never shifts layout.
+- Dropdown overlay: the only drop shadow on the page, `0 4px 16px rgba(0,0,0,0.1)`. The Storybook popover token is heavier (`0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08)`); prefer the claude.com value outside the chat composer.
+
+The two sources disagree. The Storybook ladder below is near-neutral (`#f5f5f3`, `#fcfcfb`, white) and its dark steps (`#0b0b0a` to `#20201e`) do not match claude.com (`#141413`, `#1a1918`, `#262624`). The Storybook ladder is unverified; claude.com is first-party. Use claude.com surfaces by default. Keep the Storybook ladder only where a design must match the Storybook's chat screens, and say so.
+
+### Surface ladder (Storybook)
 
 The source states the rule: avoid harsh 1px pure black borders and build depth from four soft lightness levels (L321).
 
@@ -84,9 +125,59 @@ Notes from the source:
 
 Six steps repeat surface values (Gray 0, 10, 20, 800, 850, 900). The ladder has no 200, 400, or 600 step, and Surface 2 dark (`#1a1a19`) has no gray step.
 
-Gap in the source: the components never use this ladder. They use Tailwind's stock `neutral-*` scale (most used: `neutral-800`, `neutral-200`, `neutral-900`, `neutral-100`, `neutral-400`, `neutral-500`). Stock neutral is a pure gray, so the rendered UI is cooler than the documented warm ladder. To get the warm look, map `neutral-*` to these steps. That mapping is a skill recommendation, not source data.
+Gap in the source: the components never use this ladder. They use Tailwind's stock `neutral-*` scale (most used: `neutral-800`, `neutral-200`, `neutral-900`, `neutral-100`, `neutral-400`, `neutral-500`). Stock neutral is a pure gray, so the rendered UI is cooler than the documented warm ladder. To get the warm look, override `neutral-*` with the claude.com grays below.
 
-### Text and border colors in use
+### Site grays (claude.com)
+
+claude.com uses one 20-step warm gray scale (`--color-gray-*`) for every text, border, fill, and button color. [assets/cds-tokens.css](../assets/cds-tokens.css) declares it as `--cds-site-gray-*`.
+
+| Step | Hex | Step | Hex |
+| --- | --- | --- | --- |
+| 000 | `#ffffff` | 500 | `#87867f` |
+| 050 | `#faf9f5` | 550 | `#73726c` |
+| 100 | `#f5f4ed` | 600 | `#5e5d59` |
+| 150 | `#f0eee6` | 650 | `#4d4c48` |
+| 200 | `#e8e6dc` | 700 | `#3d3d3a` |
+| 250 | `#dedcd1` | 750 | `#30302e` |
+| 300 | `#d1cfc5` | 800 | `#262624` |
+| 350 | `#c2c0b6` | 850 | `#1f1e1d` |
+| 400 | `#b0aea5` | 900 | `#1a1918` |
+| 450 | `#9c9a92` | 950 | `#141413` |
+
+Stock `neutral-*` to site gray, nearest by CIE lightness (a skill recommendation, computed). Override `neutral` in the Tailwind theme with these values, and every recipe turns warm without class changes:
+
+| Stock step | Stock hex | Site step | Site hex | Lightness gap (L*) |
+| --- | --- | --- | --- | --- |
+| `neutral-50` | `#fafafa` | 050 | `#faf9f5` | 0.4 |
+| `neutral-100` | `#f5f5f5` | 100 | `#f5f4ed` | 0.4 |
+| `neutral-200` | `#e5e5e5` | 200 | `#e8e6dc` | 0.3 |
+| `neutral-300` | `#d4d4d4` | 300 | `#d1cfc5` | 1.9 |
+| `neutral-400` | `#a3a3a3` | 450 | `#9c9a92` | 3.4 |
+| `neutral-500` | `#737373` | 550 | `#73726c` | 0.5 |
+| `neutral-600` | `#525252` | 650 | `#4d4c48` | 2.6 |
+| `neutral-700` | `#404040` | 700 | `#3d3d3a` | 1.4 |
+| `neutral-800` | `#262626` | 800 | `#262624` | 0.1 |
+| `neutral-900` | `#171717` | 900 | `#1a1918` | 1.1 |
+| `neutral-950` | `#0a0a0a` | 950 | `#141413` | 3.5 |
+
+### Text roles (claude.com)
+
+Use these roles for text. The tokens switch under `.dark`.
+
+| Role | Token | Light | Dark | Contrast on page (light / dark) |
+| --- | --- | --- | --- | --- |
+| Page background | `--cds-page` | 050 `#faf9f5` | 950 `#141413` | none |
+| Primary text, headings | `--cds-text-primary` | 950 `#141413` | 050 `#faf9f5` | 17.50:1 / 17.50:1 |
+| Secondary text, body copy | `--cds-text-secondary` | 750 `#30302e` | 400 `#b0aea5` | 12.55:1 / 8.29:1 |
+| Tertiary text, subheads, meta | `--cds-text-tertiary` | 600 `#5e5d59` | 500 `#87867f` | 6.26:1 / 5.04:1 |
+
+All three text roles pass WCAG AA in both modes (computed). On the page, the hero subhead uses tertiary text and body quotes use secondary text.
+
+Icons take the tertiary color (600 `#5e5d59`, 6.26:1), or the text color of their button. Inline text links inherit the text color with an underline in `--cds-border-primary` (400 `#b0aea5`); nav and body links show the underline on hover only.
+
+### Text and border colors in the Storybook
+
+These are the Storybook's stock classes. With the `neutral` override above they render warm; for new text, prefer the claude.com roles.
 
 | Role | Light | Dark |
 | --- | --- | --- |
@@ -102,15 +193,26 @@ Gap in the source: the components never use this ladder. They use Tailwind's sto
 
 Contrast notes (computed): `neutral-400` (`#a3a3a3`) on white is 2.52:1, on `#fcfcfb` 2.46:1, and on `#f0f0ee` 2.21:1. The source uses it for captions, placeholders, and breadcrumbs. Keep it for non-essential text only. In dark mode, `text-neutral-500` without a `dark:` variant gives 3.78:1 on `#171717`; give muted text a dark variant such as `dark:text-neutral-400`.
 
-### Status colors
+### Status and control colors
 
-The source has no status palette. It uses stock Tailwind colors:
+claude.com defines these (`--color-error`, `--color-switch-on`):
+
+| Meaning | Hex | Contrast |
+| --- | --- | --- |
+| Error, destructive | `#bf4d43` | 4.57:1 on `#faf9f5`, 3.83:1 on `#141413` |
+| Switch on-state | `#2c84db` | 3.67:1 against the page (passes the 3:1 control threshold) |
+
+Use `#bf4d43` for error text and destructive hover instead of stock red. It fails AA for small text in dark mode, and claude.com defines no dark variant. Lighten it there and say so. claude.com defines no success or warning color.
+
+claude.com also defines an illustration palette: cactus `#bcd1ca`, heather `#cbcadb`, mineral `#629987`, peach `#ebc9b7`, plum `#827dbd`, sky `#6a9bcc`. Use it for illustrations and charts only, not for controls or text.
+
+The Storybook has no status palette. It uses stock Tailwind colors:
 
 | Meaning | Class |
 | --- | --- |
 | Success, "copied" (light UI) | `text-emerald-500` |
 | Success in the dark code block | `text-green-400` |
-| Destructive hover (trash, remove) | `hover:text-red-500` |
+| Destructive hover (trash, remove) | `hover:text-red-500`; use `#bf4d43` |
 | Wrong state in demos | `text-red-500` |
 | Warning, drift in demos | `text-amber-500` |
 
@@ -189,6 +291,13 @@ The rest caption in the source writes the value as `0 0.25rem 1.25rem rgba(0,0,0
 
 Gap in the source: there is no dark composer shadow. The same black rings render on `#20201e`, where they are nearly invisible. Runtime check on 2026-10-17 confirmed the light value in dark mode.
 
+Fix (a skill recommendation, not rendered against the source): keep the ring alphas, switch the rings to white, and raise the drop shadow to the dark ladder's alphas. [assets/cds-tokens.css](../assets/cds-tokens.css) sets these under `.dark`.
+
+| State | Dark `box-shadow` |
+| --- | --- |
+| Rest | `0 0.25rem 1.25rem rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.08)` |
+| Focus-within | `0 0.25rem 1.25rem rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.16), 0 0 0 1px rgba(255,255,255,0.16)` |
+
 ### Elevation ladder
 
 | Level | Light | Dark | Use |
@@ -206,7 +315,7 @@ Ladder notes from the source:
 - The ladder assigns MD to the thinking block, but the thinking card in the source has no shadow.
 - The surface sample cards use stock `shadow-sm` instead of the SM token.
 
-Source defect: the source uses `shadow-xs` 29 times. Tailwind v3 has no `shadow-xs`, and the page loads Tailwind v3 from the CDN. A runtime check on 2026-10-17 showed `box-shadow: none` for these elements. Tailwind v4 does define `shadow-xs`. Decide per project: omit the shadow to match the rendered source, or use `--cds-shadow-sm`.
+Source defect: the source uses `shadow-xs` 29 times. Tailwind v3 has no `shadow-xs`, and the page loads Tailwind v3 from the CDN. A runtime check on 2026-10-17 showed `box-shadow: none` for these elements. Tailwind v4 does define `shadow-xs`, so it renders there; see [Tailwind v4](#tailwind-v4). Decide per project: omit the shadow to match the rendered source, or use `--cds-shadow-sm`.
 
 Stock Tailwind shadows also appear: `shadow-sm` (send button, sidebar logo), `shadow-md` (code block, runner chips), `shadow-lg` (spring press button), `shadow-xl` (canvas card light, draggable card), `shadow-2xl` (canvas card dark), `shadow-inner` (clay swatches), `shadow` (custom runner chip).
 
@@ -224,17 +333,50 @@ Body defaults: `font-sans antialiased`; `text-neutral-900` on `#f8f9fa` (light),
 
 Gaps in the source:
 
-- Newsreader is loaded and configured, but no element uses `font-serif`. The source gives no rule for serif use. Inter 300 is loaded but unused.
+- Newsreader is loaded and configured, but no element uses `font-serif`. The source gives no rule for serif use; claude.com does (headings are serif, see below). Inter 300 is loaded but unused.
 - JetBrains Mono loads only 400 and 500, but many labels use `font-mono font-bold`. The browser synthesizes the bold. Load 700, or use `font-medium` for mono labels.
 - `font-[470]` and the 460/560 weights render correctly because the served Inter file is variable. Runtime check on 2026-10-17: one Inter file serves all weights.
 
 The source text names "Anthropic-Sans" and "Anthropicons" as the real app's typeface and icon font. Inter and Phosphor are the Storybook's public substitutes.
 
+### Type on claude.com
+
+claude.com sets type in three proprietary families: `anthropicSans` (fallback `system-ui, sans-serif`), `anthropicSerif` (fallback `Georgia, serif`), and `anthropicMono` (fallback `ui-monospace, monospace`). Do not load them unless you hold a license. Substitute Inter, Newsreader, and JetBrains Mono, and say so.
+
+Rules from claude.com:
+
+- Headings use the serif. Body, buttons, and captions use the sans.
+- Every text class sets `font-feature-settings: "pnum", "lnum", "liga"`: proportional lining figures. Changing numbers still need `tabular-nums` (Constraint 05).
+- The display heading renders at weight 400; headline classes declare weight 500 (`--font-weight-medium`). Body text is 400.
+- Headings use `text-wrap: balance` (Constraint 03).
+
+Type scale. Each class has a sans form and a `-serif` form; the page uses the serif form for display and headline classes. Fluid sizes interpolate from a 320px to a 1440px viewport: `clamp(min, min + range * (100vw - 20rem) / 1120, max)`.
+
+| Class | Family | Size (320px to 1440px) | Line height | Example on the page |
+| --- | --- | --- | --- | --- |
+| `display-1` | serif | 42px to 72px | 1.1 | Hero title "Claude Code" |
+| `display-2` | serif | 36px to 64px | 1.1 | none |
+| `headline-1` | serif | 34px to 52px | 1.2 | Section title |
+| `headline-2` | serif | 30px to 44px | 1.2 | none |
+| `headline-3` | serif | 28px to 36px | 1.3 | none |
+| `headline-4` | serif | 23px to 32px | 1.1 | Pricing plan name |
+| `headline-5` | serif | 20px to 25px | 1.2 | none |
+| `headline-6` | sans, weight 600 | 16px to 19px | 1.2 | none |
+| `body-large-1` | sans | 22px to 24px | 1.6 | none |
+| `body-large-2` | sans | 20px to 23px | 1.5 | Hero subhead, tertiary color |
+| `body-1` | sans | 19px to 20px | 1.6 | Quotes, secondary color |
+| `body-2` | sans | 17px | 1.6 | Large button labels |
+| `body-3` | sans | 15px | 1.6 | Medium button labels |
+| `caption` | sans | 12px | 1.6, `letter-spacing: 0.01em` | Small button labels, footer links |
+| `caption-mono` | mono, uppercase | 12px | 1.6, `letter-spacing: 0.01em` | none |
+
+This scale is for page-level text. Chat UI keeps the denser roles below; `body-3` (15px) matches the assistant message size.
+
 ### Type roles in use
 
 | Role | Size and leading | Weight | Color (light / dark) |
 | --- | --- | --- | --- |
-| Assistant message body | `text-[15px] leading-[1.65]` | normal | `neutral-800` / `neutral-200` |
+| Assistant message body | `text-[15px] leading-[1.65]` | normal | `neutral-800` / `neutral-200`; claude.com secondary text is 750 / 400 |
 | Composer input | `text-[15px] leading-[1.4]` | normal | `neutral-900` / `neutral-100`; placeholder `neutral-400` |
 | User bubble | `text-sm leading-relaxed` (14px, 1.625) | normal | `neutral-900` / `neutral-100` |
 | Story and section title | `text-base` (16px) | semibold | `neutral-900` / `neutral-100` |
@@ -369,8 +511,6 @@ Defects in the source icons. Use the official Phosphor package instead of the in
 - The duotone copy sits almost exactly under the main path, so only faint slivers show.
 - The caption's "weight 533.3, active 700" is not implemented; the component has only the stroke-based bold toggle. The "256 x 256" badge does not apply to the spark (100 x 100).
 
-The spark glyph is Anthropic's logo. Use it only in work for Anthropic or Claude. Use your own product mark elsewhere.
-
 ### Icon placement recipes
 
 | Context | Recipe |
@@ -410,6 +550,22 @@ tailwind.config = {
 
 The source loads the unversioned Tailwind Play CDN, which is a development tool. Pin a Tailwind version in real projects.
 
+To use the claude.com grays, add this to `theme.extend.colors` (a skill recommendation). `site` gives the full scale as `bg-site-950` and similar; `neutral` warms every recipe class in place; `clay` replaces the source entry with the claude.com hover and focus values:
+
+```js
+site: {
+  '000': '#ffffff', '050': '#faf9f5', 100: '#f5f4ed', 150: '#f0eee6', 200: '#e8e6dc',
+  250: '#dedcd1', 300: '#d1cfc5', 350: '#c2c0b6', 400: '#b0aea5', 450: '#9c9a92',
+  500: '#87867f', 550: '#73726c', 600: '#5e5d59', 650: '#4d4c48', 700: '#3d3d3a',
+  750: '#30302e', 800: '#262624', 850: '#1f1e1d', 900: '#1a1918', 950: '#141413',
+},
+neutral: {
+  50: '#faf9f5', 100: '#f5f4ed', 200: '#e8e6dc', 300: '#d1cfc5', 400: '#9c9a92',
+  500: '#73726c', 600: '#4d4c48', 700: '#3d3d3a', 800: '#262624', 900: '#1a1918', 950: '#141413',
+},
+clay: { DEFAULT: '#d97757', hover: '#c6613f', focus: '#c46849', light: '#fbf3ef' },
+```
+
 To make the radius class names render the documented ladder, add this to `theme.extend` (a skill recommendation; the source has no radius extension):
 
 ```js
@@ -423,14 +579,29 @@ borderRadius: {
 },
 ```
 
-For Tailwind v4, declare the same names in CSS. This mapping follows v4's `@theme` syntax; it was not run against a v4 build in this skill:
+### Tailwind v4
+
+The recipes use v3 class names. v4 renames several of them, so a recipe copied unchanged into v4 renders differently. Source: https://tailwindcss.com/docs/upgrade-guide, read 2026-10-19.
+
+| Recipe class (v3) | v3 result | Write in v4 |
+| --- | --- | --- |
+| `shadow-xs` | nothing (undefined in v3) | omit it, or use `--cds-shadow-sm`; v4 `shadow-xs` draws a 1px shadow the source never rendered |
+| `shadow-sm` | small shadow | `shadow-xs` |
+| `shadow` | default shadow | `shadow-sm` |
+| `rounded` | 4px | `rounded-sm` |
+| `outline-none` | transparent outline, visible in forced colors | `outline-hidden` (v4 `outline-none` removes the outline) |
+| `placeholder-neutral-400` | placeholder color | `placeholder:text-neutral-400` (v4 default is current text at 50%) |
+| bare `border` | `gray-200` border | add a color class (v4 default is `currentColor`) |
+
+For v4, declare the same names in CSS. The radius variables use the v4 names, so write the recipe's `rounded` as `rounded-sm`. Dark-mode and `--radius-*` syntax come from https://tailwindcss.com/docs/dark-mode and https://tailwindcss.com/docs/border-radius (read 2026-10-19). This block was not run against a v4 build:
 
 ```css
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
   --color-clay: #d97757;
-  --color-clay-hover: #cc5a36;
+  --color-clay-hover: #c6613f;
+  --color-clay-focus: #c46849;
   --color-clay-light: #fbf3ef;
   --color-surface-light0: #f5f5f3;
   --color-surface-light1: #fcfcfb;
@@ -440,14 +611,35 @@ For Tailwind v4, declare the same names in CSS. This mapping follows v4's `@them
   --color-surface-dark1: #151515;
   --color-surface-dark2: #1a1a19;
   --color-surface-dark3: #20201e;
+  /* Optional: claude.com grays. Add --color-site-* the same way from the v3 block. */
+  --color-neutral-50: #faf9f5;  --color-neutral-100: #f5f4ed; --color-neutral-200: #e8e6dc;
+  --color-neutral-300: #d1cfc5; --color-neutral-400: #9c9a92; --color-neutral-500: #73726c;
+  --color-neutral-600: #4d4c48; --color-neutral-700: #3d3d3a; --color-neutral-800: #262624;
+  --color-neutral-900: #1a1918; --color-neutral-950: #141413;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Newsreader", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* Optional: radius ladder (skill recommendation). Omit for stock radii. */
+  --radius-sm: calc(5px * 16 / 17);   /* rounded-sm  -> 4.7px */
+  --radius-md: calc(6px * 16 / 17);   /* rounded-md  -> 5.6px */
+  --radius-lg: calc(8px * 16 / 17);   /* rounded-lg  -> 7.5px */
+  --radius-xl: calc(10px * 16 / 17);  /* rounded-xl  -> 9.4px */
+  --radius-2xl: calc(14px * 16 / 17); /* rounded-2xl -> 13.2px */
 }
 ```
+
+### Fonts
 
 Font loading used by the source:
 
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 ```
+
+Recommended request (a skill recommendation): load weight ranges so the 460 and 560 dark-mode weights and bold mono labels use real font files.
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+```
+
+Add Newsreader only if a design uses `font-serif`.

@@ -45,6 +45,7 @@ Other curves the components use. The names are labels from this skill; the sourc
 | Segmented thumb | `transition-all duration-150 ease-[cubic-bezier(.32,.72,0,1)]` (token says 120ms) |
 | Segmented labels | `transition-colors duration-150` |
 | Buttons, tiles | `transition-all` or `transition-colors` (Tailwind default 150ms), `active:scale-95` |
+| Buttons (claude.com) | `color 0.1s`, `background-color`, `border-color`, `box-shadow 0.2s`, all `ease-in-out`; no pressed scale |
 | Icon tile hover | `group-hover:scale-110 group-hover:text-clay` |
 | Inline icon alignment demo | `vertical-align 0.15s ease` |
 | Theme switch (shell) | `transition-colors duration-200` |
@@ -104,7 +105,7 @@ Defects to avoid:
 
 - `Array.from(text)` splits by code point, not grapheme. Emoji sequences and combining marks split apart. Use `Intl.Segmenter` with `granularity: "grapheme"`.
 - In a live stream, compute the delay from the index within the newly arrived chunk, not the whole message. Otherwise late characters wait seconds. This is a skill recommendation; the source animates a fixed string.
-- Wrapping every character in `inline-block` breaks normal line breaking between words. Keep `whitespace-pre` on spaces, or wrap words and animate characters inside them.
+- Each `inline-block` character is an atomic inline, so a line can break between any two characters, mid-word. Wrap each word in a `whitespace-nowrap` span, animate the characters inside it, and leave the spaces between words as plain text.
 - Replay unmounts the text for 50ms, so a tall block collapses and grows back. The replay timer is not cleared on fast clicks or unmount.
 
 ## Thinking quiet dots
@@ -114,7 +115,7 @@ Defects to avoid:
 | Inline (accordion header) | `size-[3px]` | `gap-[3.5px]` | `#d97757` |
 | Enlarged (lab) | `size-2` (8px) | `gap-[6px]` | `#d97757` |
 
-All dots: `1.9s cubic-bezier(.4, 0, .2, 1) infinite timeline-quiet-dot`. Dot 2 starts 0.15s late and dot 3 starts 0.3s late, which makes a clay wave that rises and falls. Each dot is visible only from 22% to 70% of the cycle, so the row reads as quiet rather than busy. Pair the dots with a "Thinking..." label in `text-clay font-medium`.
+All dots: `1.9s cubic-bezier(.4, 0, .2, 1) infinite timeline-quiet-dot`. Dot 2 starts 0.15s late and dot 3 starts 0.3s late, which makes a clay wave that rises and falls. Each dot is fully opaque only from 22% to 70% of the cycle and hidden from 90% to 8%, so the row reads as quiet rather than busy. Pair the dots with a "Thinking..." label in `text-clay font-medium`.
 
 The animation has no fill mode, so dots 2 and 3 show solid during their delay on mount. Use negative delays (`0s`, `-1.75s`, `-1.6s`) to keep the offsets without the flash. The enlarged lab variant scales the dots 2.67x but keeps the same 2px to 2.5px travel, so its bounce looks smaller than the inline one.
 
