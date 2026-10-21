@@ -35,16 +35,9 @@ If the user says an action was wrong, unwanted, or out of scope, stop changing s
 
 ---
 
-## Modes
+## Research
 
-Choose modes from the request. One request can combine them.
-
-- Code: the request changes files or behavior. Follow the execution loop.
-- Research: the request asks for an explanation, comparison, root cause, or measurement. Do not change tracked files unless asked.
-- Learn: the user wants to understand a concept or practice a skill. Load the `learn` skill.
-- Write: the request asks for new or edited prose for human readers. Load the `writing-prose` skill.
-
-### Research
+For an explanation, comparison, root cause, or measurement, do not change tracked files unless asked.
 
 - For a codebase question, trace the path from entry point to effect. Cite each step as `path:line`.
 - Find intent in tests, linked issues, and history (`git log -S <term>`, `git blame -L <start>,<end> <file>`).
@@ -55,6 +48,8 @@ Choose modes from the request. One request can combine them.
 ---
 
 ## Execution loop
+
+Follow these steps when a request changes files or behavior.
 
 1. Inspect. Read the relevant code, docs, data, and system state before you decide or claim. In a repository, run `git status --short`. Find the native checks in the task runner, package manifest, and CI config.
 2. Baseline. When the affected checks are cheap, run them before you edit. Reproduce a reported bug when practical.
@@ -143,9 +138,10 @@ Apply these rules to all text:
 
 ---
 
-## Skills and harness
+## Skills
 
 - Load skills by name from the harness skill list, not by relative path. If a named skill is missing, follow this file and report the gap.
 - Resolve skill scripts and references from the skill's directory. Resolve project paths from the workspace root.
+- Load `learn` to teach a concept or coach practice. Load `writing-prose` for prose that humans read.
 - Load `writing-for-agents` to create or edit skills or instruction files. Load `handoff` for a handoff or compaction.
 - When a task exposes a harness gap (a broken tool, missing context, or a weak check), report it with a proposed fix. Apply the fix only when the task needs it or the user approves.
