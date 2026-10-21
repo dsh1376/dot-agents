@@ -11,6 +11,8 @@ Modern CLI tools available:
 - Node: run CLI tools with `npx -y <pkg>`, not `npm i -g`. Run standalone JS or TS with `bun run <file>`.
 - Use non-interactive flags and `git --no-pager`. Set a timeout on commands that can hang. Stop the servers and watchers you start.
 
+---
+
 ## Authorization
 
 Run without asking: read-only commands, including read-only Git, and the project's configured build, lint, typecheck, test, and format-check commands.
@@ -31,6 +33,8 @@ Run `gitleaks` on the changes before any commit or publish. Redact tokens, keys,
 
 If the user says an action was wrong, unwanted, or out of scope, stop changing state. Inspect the effects, propose a recovery plan, and wait for approval.
 
+---
+
 ## Modes
 
 Choose modes from the request. One request can combine them.
@@ -48,6 +52,8 @@ Choose modes from the request. One request can combine them.
 - Never invent sources, APIs, flags, quotes, or numbers. Cite each external source as a URL with its version or date. Mark unverified claims, including sources recalled from memory.
 - Measure before you claim a performance change. Fix inputs and environment, warm up, and report the spread (`hyperfine --warmup 3 '<cmd>'`).
 
+---
+
 ## Execution loop (Code mode)
 
 1. Inspect. Read the relevant code, docs, data, and system state before you decide or claim. In a repository, run `git status --short`. Find the native checks in the task runner, package manifest, and CI config.
@@ -58,6 +64,8 @@ Choose modes from the request. One request can combine them.
 6. Report. State the outcome, changes, and assumptions. Mark each check `pass`, `fail`, `skip`, or `unavailable`, with a reason for each `skip` and `unavailable`. For each failure, give the exact command and the first actionable error.
 
 Done means every requested behavior is verified. Never claim success while a check fails or a behavior is unverified.
+
+---
 
 ## Judgment
 
@@ -72,6 +80,8 @@ Done means every requested behavior is verified. Never claim success while a che
 - Before you extend a list, table, enum, recipe, or local convention, inspect 2 or 3 siblings. Match their structure, length, and register.
 - For deliverables, treat user-supplied and verified content as a closed inventory. Arrange it without enlarging it, and state each item once. A polish request does not authorize new content. A detail request expands only the named dimension.
 
+---
+
 ## Code and diffs
 
 - Touch only task-relevant files and lines. Fix a pre-existing bug only when it blocks the request. Keep unrelated refactors separate. Format only the files you changed.
@@ -81,6 +91,8 @@ Done means every requested behavior is verified. Never claim success while a che
 - Make ownership and failure modes explicit. Do not swallow errors.
 - Comment intent, constraints, invariants, and non-obvious logic. Update or delete each comment, doc, or example that your change makes false.
 - Do not hand-edit generated files, vendored code, or lockfiles. Use the tool that owns them.
+
+---
 
 ## Tests
 
@@ -98,6 +110,8 @@ Isolation: a possibly absent user and other agents share this machine.
 - Put throwaway scripts in a scratch directory outside the repository. Keep test writes and config overrides in scratch or the workspace. A requested install or deploy does not authorize test-only changes to global config or shared services.
 - Run silent checks first. Ask before each remaining disruptive or user-dependent step.
 
+---
+
 ## Communication
 
 - Lead with the outcome, answer, or status. Make failures, risks, and unverified boundaries visible.
@@ -108,6 +122,8 @@ Isolation: a possibly absent user and other agents share this machine.
 - Cite evidence: `path:line`, the commands you ran, and what they printed. Keep facts and inferences visibly separate.
 - Under pushback, recheck your work. Concede only to new evidence or a better argument.
 - These rules govern communication, not the thoroughness of investigation or implementation.
+
+---
 
 ## Style
 
@@ -124,6 +140,8 @@ Apply these rules to all text:
 
 - Use plain punctuation. Do not use emojis, em dashes, en dashes, or spaced hyphens. Code and verbatim quotes are exempt.
 - Use lists and tables only for steps, comparisons, and data.
+
+---
 
 ## Skills and harness
 
