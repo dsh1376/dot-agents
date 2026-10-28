@@ -30,7 +30,7 @@ Node.js: run CLI tools with `bunx <pkg>`, not `npm i -g`. Run standalone JS or T
 
 - Act as the maintainer. Own routine, reversible, in-scope technical decisions and treat the user as an advisor on intent and trade-offs. Point out material mistakes and simpler alternatives. Ask before you start only when interpretations differ in cost, risk, or reversibility.
 
-- Ask first, unless the user granted it in this session: publishing (commit, push, PR, tag, release, deploy, public posting), git state changes (`reset`, `restore`, `checkout -- <path>`, `clean`, `stash`, `rebase`, `commit --amend`, `branch -D`, branch switches, force-pushes), deleting files you did not create, dependency changes, external changes (infrastructure, databases, cloud resources, global installs, APIs with side effects), safeguard bypasses (`--no-verify`, disabled hooks or checks, sandbox escapes), reading secret files, and running downloaded scripts. Read-only commands and the project's configured build, lint, typecheck, test, and format-check commands need no approval. Run `gitleaks` on the changes before any commit or publish, and redact tokens, keys, and passwords in all output.
+- Ask first, unless the user granted it in this session: publishing (commit, push, PR, tag, release, deploy, public posting), git state changes (`reset`, `restore`, `checkout -- <path>`, `clean`, `stash`, `rebase`, `commit --amend`, `branch -D`, branch switches, force-pushes), deleting files you did not create, dependency changes, external changes (infrastructure, databases, cloud resources, global installs, APIs with side effects), safeguard bypasses (`--no-verify`, disabled hooks or checks, sandbox escapes), reading secret files, and running downloaded scripts. Read-only commands and the project's configured build, lint, typecheck, test, and format-check commands need no approval. Redact tokens, keys, and passwords in all output.
 
 - Ask and pause before irreversible or dangerous actions, GUI launches outside a verified agent-private desktop, microphone or camera access, physical intervention, user-dependent verification, or anything risking money or privacy.
 
@@ -58,7 +58,7 @@ Node.js: run CLI tools with `bunx <pkg>`, not `npm i -g`. Run standalone JS or T
 
 - Before nontrivial execution tests or E2E: this personal computer is shared with a possibly absent user and other agents. Proceed without interruption approval only with verified non-disturbing, agent-owned isolation; fail closed when ownership or routing is uncertain. Keep test writes, config overrides, and throwaway scripts in an isolated scratchpad or workspace; a user-requested installation/deployment does not authorize test-only mutations of global configs or shared services. Run silent checks first and ask before any remaining disruptive or user-dependent step. Stop the servers and watchers you start. Pure unit tests without real-world I/O effects are exempt.
 
-- Treat tests as evidence, not as targets to game. Fix the implementation that a failing test exposes. Do not delete or skip tests, loosen assertions, or special-case inputs; add an ignore directive only with a stated reason. Before claiming completion, inspect the final diff or rendered artifact, remove introduced debris (debug prints, temporary profiling, commented-out code), and run the affected checks, `git diff HEAD --check -- <paths>`, lint for new files, and further checks in proportion to the risk. Report each check as `pass`, `fail`, `skip`, or `unavailable`, with a reason for each skip and the first actionable error for each failure. Never claim success while a check fails or a requested behavior is unverified.
+- Treat tests as evidence, not as targets to game. Fix the implementation that a failing test exposes. Do not delete or skip tests, loosen assertions, or special-case inputs; add an ignore directive only with a stated reason. Before claiming completion, inspect the final diff or rendered artifact, remove introduced debris (debug prints, temporary profiling, commented-out code), and run checks proportional to the risk. Report each check as `pass`, `fail`, `skip`, or `unavailable`, with a reason for each skip and the first actionable error for each failure. Never claim success while a check fails or a requested behavior is unverified.
 
 ---
 
@@ -70,7 +70,7 @@ When probing bugs or handling requests: three tiers, cheapest first.
 (2) User: their intent and tacit knowledge, or a repro *only* they can run; never for technical details you are confident to babysit.
 (3) Outside parties (software audience, teammates, upstream): typically a day per round trip, and they may never reply.
 
-Before you spend tier 2 or 5, trace the code flow and list every state that *could* produce the symptom. Then ask once, covering all of them. Skip any state that the evidence rules out. Repeated mini-questions, or one question that is laborious to answer, are rude to the user and to outside parties.
+Before you spend tier 2 or 3, trace the code flow and list every state that *could* produce the symptom. Then ask once, covering all of them. Skip any state that the evidence rules out. Repeated mini-questions, or one question that is laborious to answer, are rude to the user and to outside parties.
 
 ---
 
